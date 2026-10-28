@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="assets/Lexilegal 1.svg" type="image/jpeg">
+  <link rel="icon" href="assets/favicon-lexilegal.png" type="image/png">
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -84,11 +84,14 @@
       </div>
 
       <div class="contact-grid">
-        <form id="form-whatsapp" class="form-contacto" action="https://formsubmit.co/soporte@lexilegal.es" method="post">
+        <form id="form-contacto" class="form-contacto" action="https://formsubmit.co/soporte@lexilegal.es" method="post">
           <h3>Contacta con nosotros</h3>
-          <input type="text" id="wa-nombre" placeholder="Tu nombre" required>
-          <input type="text" id="wa-despacho" placeholder="Tu despacho" required>
-          <textarea id="wa-mensaje" placeholder="¿En que podemos ayudarte?" rows="3" required></textarea>
+          <input type="hidden" name="_captcha" value="false">
+
+          <input type="text" id="asunto-form" placeholder="Asunto" name="_subject" required>
+          <input type="email" id="correo-form" name="email" placeholder="example@tudespacho.com" required>
+          <input type="text" id="nombre-form" name="nombre" placeholder="Tu nombre" required>
+          <textarea name="mensaje" id="mensaje-form" placeholder="Escribe tu mensaje aquí..." required></textarea>
         
           <button id="btn-form" type="submit" class="btn-primary ">Enviar</button>
         </form>

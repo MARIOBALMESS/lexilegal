@@ -343,7 +343,7 @@ body {
   font-weight: 600;
 }
 
-#wa-nombre, #wa-despacho, #wa-mensaje{
+#asunto-form, #correo-form, #mensaje-form, #nombre-form{
   padding: 12px;
   color: var(--color-text-white);
   background-color: var(--color-dark);
@@ -353,12 +353,12 @@ body {
   transition: box-shadow 0.3s ease;
 }
 
-#wa-mensaje{
+#mensaje-form{
   resize: vertical;
   font-family: var(--font-sans);
 }
 
-#wa-nombre:focus, #wa-despacho:focus, #wa-mensaje:focus{
+#asunto-form:focus, #correo-form:focus, #nombre-form:focus, #mensaje-form:focus{
   box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
   outline: none;
   border-color: var(--color-text-white);
