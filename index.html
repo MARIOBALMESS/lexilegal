@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexi Legal | Inteligencia Artificial para Despachos</title>
+  <meta name="description" content="Atención por WhatsApp con inteligencia artificial y panel de gestión en tiempo real para despachos de abogados.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <div class="glow"></div>
+
+  <header class="header">
+    <div class="brand">
+      <img src="assets/lexilegal-logo.jpeg" alt="lexilegal" class="logo-header">
+      <span class="brand-name">Lexi</span>
+      <span class="brand-badge">Legal</span>
+    </div>
+    <a href="#contacto" class="nav-link">Contacto</a>
+  </header>
+
+  <main class="main">
+    <h1 class="hero-title">
+      Atención por WhatsApp e inteligencia artificial para tu despacho.
+    </h1>
+
+    <p class="hero-desc">
+      Automatizamos la recepción de clientes potenciales con respuestas inmediatas y un tono estrictamente profesional, coordinado en directo con un panel privado para letrados.
+    </p>
+
+    <div class="cta-group">
+      <a href="https://wa.me/34665028110" target="_blank" class="btn-primary btn-arrow">
+        <img src="assets/whatsapp-svgrepo-com.svg" alt="Probar demo en WhatsApp">
+        <span>Probar demo de WhatsApp</span>  
+        <img src="assets/right-arrow-svgrepo-com.svg" alt="Flecha Derecha" class="flecha">
+      </a>
+
+      <a href="#contacto" class="btn-secondary">
+        Contacto
+      </a>
+      
+    </div>
+    <span class="domain-text">lexilegal.es</span>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-num">01</span>
+        <h2 class="service-title">WhatsApp 24/7</h2>
+        <p class="service-desc">
+          Atención continua e inmediata a las personas que contactan con tu bufete, sin tiempos de espera.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">02</span>
+        <h2 class="service-title">Panel de Control Privado</h2>
+        <p class="service-desc">
+          Cada abogado accede con usuario y clave a su entorno seguro para gestionar expedientes y clientes en tiempo real.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">03</span>
+        <h2 class="service-title">Supervisión del Letrado</h2>
+        <p class="service-desc">
+          El profesional mantiene el control absoluto y puede intervenir manualmente en cualquier momento del diálogo.
+        </p>
+      </div>
+    </div>
+
+    <section id="contacto" class="contact-section">
+      <div class="contact-header">
+        <span class="contact-eyebrow">Contacto Directo</span>
+        <h2 class="contact-title">Hablemos sobre tu despacho.</h2>
+        <p class="contact-desc">
+          Si diriges un despacho o eres letrado y deseas incorporar el asistente en WhatsApp y el panel de control, contacta directamente con nosotros:
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <form id="form-whatsapp" class="form-contacto">
+          <h3>Contacta con nosotros</h3>
+          <input type="text" id="wa-nombre" placeholder="Tu nombre" required>
+          <input type="text" id="wa-despacho" placeholder="Tu despacho" required>
+          <textarea id="wa-mensaje" placeholder="¿En que podemos ayudarte?" rows="3" required></textarea>
+        
+          <button type="submit" class="btn-primary ">Enviar</button>
+        </form>
+
+        <a href="https://www.linkedin.com/in/mario-zamorano-880405299/" target="_blank" rel="noopener noreferrer" class="contact-card">
+          <div>
+            <div class="icon-box">
+              <svg fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28Z"/>
+              </svg>
+            </div>
+            <span class="contact-label">Fundador</span>
+            <p class="contact-value">Mario Javier Zamorano López</p>
+          </div>
+          <div class="contact-action">
+            <span>Conectar en LinkedIn</span>
+            <span class="contact-action-arrow">&rarr;</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <span class="footer-brand">Lexi Legal</span> &copy; <span id="current-year">2026</span>. Todos los derechos reservados.
+    </div>
+    <div class="footer-domain" style="display: flex; gap: 0.75rem; align-items: center;">
+      <a href="mailto:soporte@lexilegal.es" style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='inherit'">soporte@lexilegal.es</a>
+      <span>&bull;</span>
+      <span>lexilegal.es</span>
+    </div>
+  </footer>
+
+</body>
+</html>
