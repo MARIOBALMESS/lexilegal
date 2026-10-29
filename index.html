@@ -35,7 +35,7 @@
     </p>
 
     <div class="cta-group">
-      <a href="https://wa.me/34665028110" target="_blank" class="btn-primary btn-arrow">
+      <a href="https://wa.me/34665028110" target="_blank" rel="noopener noreferrer" class="btn-primary btn-arrow">
         <img src="assets/whatsapp-svgrepo-com.svg" alt="Probar demo en WhatsApp">
         <span>Probar demo de WhatsApp</span>  
         <img src="assets/right-arrow-svgrepo-com.svg" alt="Flecha Derecha" class="flecha">
@@ -86,14 +86,22 @@
       <div class="contact-grid">
         <form id="form-contacto" class="form-contacto" action="https://formsubmit.co/soporte@lexilegal.es" method="post">
           <h3>Contacta con nosotros</h3>
-          <input type="hidden" name="_captcha" value="false">
+          
+          <!-- Protección Anti-Bot Honeypot invisible -->
+          <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+            <input type="text" name="_honey_trap" id="honey-trap" tabindex="-1" autocomplete="off" value="">
+          </div>
 
-          <input type="text" id="asunto-form" placeholder="Asunto" name="_subject" required>
-          <input type="email" id="correo-form" name="email" placeholder="example@tudespacho.com" required>
-          <input type="text" id="nombre-form" name="nombre" placeholder="Tu nombre" required>
-          <textarea name="mensaje" id="mensaje-form" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+
+          <input type="text" id="asunto-form" placeholder="Asunto" name="_subject" maxlength="120" required>
+          <input type="email" id="correo-form" name="email" placeholder="example@tudespacho.com" maxlength="100" autocomplete="email" required>
+          <input type="text" id="nombre-form" name="nombre" placeholder="Tu nombre" maxlength="80" autocomplete="name" required>
+          <textarea name="mensaje" id="mensaje-form" placeholder="Escribe tu mensaje aquí..." maxlength="2000" rows="4" required></textarea>
         
-          <button id="btn-form" type="submit" class="btn-primary ">Enviar</button>
+          <button id="btn-form" type="submit" class="btn-primary">Enviar</button>
+          <div id="form-status" class="form-status" role="alert" aria-live="polite"></div>
         </form>
 
         <a href="https://www.linkedin.com/in/mario-zamorano-880405299/" target="_blank" rel="noopener noreferrer" class="contact-card">
@@ -120,7 +128,7 @@
       <span class="footer-brand">Lexi Legal</span> &copy; <span id="current-year">2026</span>. Todos los derechos reservados.
     </div>
     <div class="footer-domain" style="display: flex; gap: 0.75rem; align-items: center;">
-      <a href="mailto:soporte@lexilegal.es" style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='inherit'">soporte@lexilegal.es</a>
+      <a href="mailto:soporte@lexilegal.es" class="footer-email">soporte@lexilegal.es</a>
       <span>&bull;</span>
       <span>lexilegal.es</span>
     </div>
