@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Helper para escapar caracteres especiales en XML (TwiML de Twilio)
+  // Helper para escapar caracteres especiales en XML (TwiML)
   function escapeXml(unsafe) {
     if (!unsafe) return '';
     return unsafe
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       .replace(/'/g, '&apos;');
   }
 
-  // 1. Verificación del Webhook para Meta (petición GET)
+  // 1. Verificación para Meta (GET)
   if (req.method === 'GET') {
     const mode = req.query['hub.mode'];
     const token = req.query['hub.verify_token'];
@@ -23,36 +23,55 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: 'Token incorrecto' });
   }
 
-  // 2. Recepción de mensajes entrantes (POST)
+  // 2. Recepción de mensajes (POST)
   if (req.method === 'POST') {
     try {
-      const body = req.body || {};
+      // Normalizar el body independientemente de cómo lo envíe Twilio (JSON, URLSearchParams, String o Buffer)
+      let parsedBody = req.body || {};
 
-      // DETECCIÓN DE MENSAJE DE TWILIO
-      const isTwilio = body.Body !== undefined || body.From !== undefined || req.headers['x-twilio-signature'];
+      if (typeof parsedBody === 'string') {
+        try {
+          parsedBody = JSON.parse(parsedBody);
+        } catch {
+          parsedBody = Object.fromEntries(new URLSearchParams(parsedBody));
+        }
+      } else if (Buffer.isBuffer(parsedBody)) {
+        const str = parsedBody.toString('utf-8');
+        try {
+          parsedBody = JSON.parse(str);
+        } catch {
+          parsedBody = Object.fromEntries(new URLSearchParams(str));
+        }
+      }
+
+      // Comprobar si es mensaje de Twilio
+      const isTwilio =
+        parsedBody.Body !== undefined ||
+        parsedBody.From !== undefined ||
+        req.headers['x-twilio-signature'] !== undefined;
 
       if (isTwilio) {
-        const userText = (body.Body || '').trim();
-        const fromNumber = body.From || '';
-        const senderName = body.ProfileName || 'Cliente';
+        const userText = (parsedBody.Body || '').trim();
+        const fromNumber = parsedBody.From || '';
+        const senderName = parsedBody.ProfileName || 'Cliente';
 
         console.log(`[Twilio WhatsApp] De: ${fromNumber} (${senderName}) | Mensaje: "${userText}"`);
 
-        // Lógica de respuesta de Lexi (con Gemini o fallback inteligente)
+        // Generar respuesta con la IA / motor de Lexi
         const reply = await generateLexiResponse(userText, senderName);
 
-        // Twilio responde inmediatamente al WhatsApp del usuario devolviendo TwiML (XML)
+        // Devolver TwiML en UTF-8 estricto para que Twilio envíe el WhatsApp
         const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Message>${escapeXml(reply)}</Message>
 </Response>`;
 
-        res.setHeader('Content-Type', 'text/xml');
+        res.setHeader('Content-Type', 'text/xml; charset=utf-8');
         return res.status(200).send(twiml);
       }
 
       // Si es de Meta Cloud API
-      if (body?.object && body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
+      if (parsedBody?.object && parsedBody?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
         res.status(200).send('EVENT_RECEIVED');
         return;
       }
@@ -64,7 +83,7 @@ export default async function handler(req, res) {
 <Response>
   <Message>Disculpe, ha ocurrido un error temporal. Por favor, vuelva a intentarlo en unos instantes.</Message>
 </Response>`;
-      res.setHeader('Content-Type', 'text/xml');
+      res.setHeader('Content-Type', 'text/xml; charset=utf-8');
       return res.status(200).send(errorTwiml);
     }
   }
