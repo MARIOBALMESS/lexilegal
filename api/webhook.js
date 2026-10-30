@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   function escapeXml(unsafe) {
     if (!unsafe) return '';
-    return unsafe
+    return String(unsafe)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -27,7 +27,6 @@ export default async function handler(req, res) {
         try { b = JSON.parse(b); } catch { b = Object.fromEntries(new URLSearchParams(b)); }
       }
 
-      // Obtener el texto del mensaje
       let userText = '';
       let fromNumber = '';
       let senderName = 'Cliente';
@@ -38,7 +37,6 @@ export default async function handler(req, res) {
         senderName = b.ProfileName || 'Cliente';
       }
 
-      // Si es Twilio
       const isTwilio = req.headers['x-twilio-signature'] || b?.From || b?.Body;
 
       if (isTwilio) {
@@ -66,6 +64,64 @@ export default async function handler(req, res) {
 }
 
 async function generateLexiResponse(userText, senderName) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  if (apiKey) {
+    const SYSTEM_INSTRUCTION = `Eres "LexiLegal", la asistente virtual y coordinadora de admisiones de un prestigioso despacho jurídico profesional.
+Tu misión es realizar la admisión y recopilación inicial a clientes potenciales que escriben por WhatsApp con un tono empático, impecable, profesional y cercano.
+
+REGLAS DE ACTUACIÓN INVIOLABLES:
+1. NUNCA des asesoramiento legal de fondo ni afirmes si ganarán o perderán el caso. Aclara con delicadeza que la valoración jurídica y la viabilidad procesal corresponden en exclusiva al letrado titular de nuestro despacho.
+2. Mantén las respuestas CORTAS (MÁXIMO 2-3 frases por turno). Debe leerse exactamente como un mensaje de WhatsApp real: directo, humano y sin rodeos extensos. Haz UNA SOLA PREGUNTA a la vez. No formules listas de preguntas.
+3. DETECCIÓN DE PLAZOS CRÍTICOS: Si el caso es de ámbito LABORAL (despido objetivo, disciplinario, fin de contrato o sanción), es imperativo que detectes inmediatamente la fecha exacta en la que el cliente recibió la carta o notificación, advirtiendo del perentorio plazo de caducidad de 20 días hábiles que marca la legislación laboral española para impugnar ante el SMAC.
+4. NUNCA uses la palabra "triaje" ni nada relacionado. Habla de "admisión", "revisión inicial" o "coordinación de expediente".
+5. No menciones nombres ficticios como "Valenzuela". Tu nombre y marca es "LexiLegal".
+
+FASES DE LA INTERACCIÓN:
+- Paso 1: Saludo cordial e identificación clara del motivo de consulta (Laboral, Familia, Tráfico/Seguros, Deudas). Si el usuario ya lo mencionó en su primer mensaje, acéptalo de inmediato y no repitas la pregunta.
+- Paso 2: Hechos clave y fechas (¿Qué ocurrió exactamente y en qué fecha?). Haz una sola pregunta concisa.
+- Paso 3: Documentación (Solicita amablemente foto o PDF de la carta de despido, burofax, contrato, convenio regulador o reclamación previa). Si el usuario ya adjuntó o dice que lo tiene a mano, agradéceselo y pasa al siguiente punto.
+- Paso 4: Capacidad y urgencia (Pregunta si está dispuesto/a a formalizar una consulta personalizada con el letrado titular para defender sus derechos y solicita su nombre completo y teléfono de contacto).
+
+SALIDA FINAL OBLIGATORIA:
+Cuando el cliente facilite su contacto o la interacción llegue a su conclusión natural:
+Tu mensaje debe incluir una breve despedida confirmando que pasas el expediente al letrado para agendar la cita, y JUSTO DESPUÉS debes imprimir OBLIGATORIAMENTE este bloque exacto:
+
+[FICHA RESUMEN PARA EL LETRADO]
+- Cliente: [Nombre y teléfono facilitados por el usuario]
+- Materia: [Laboral / Familia / Tráfico-Seguros / Deudas]
+- Hechos relevantes: [Exactamente 3 líneas con el resumen sintético de los hechos]
+- Alerta procesal / Fechas: [Fecha del hecho o notificación y días hábiles estimados restantes, destacando si hay urgencia por caducidad de 20 días]
+- Documentos aportados: [Documentos adjuntos o mencionados por el cliente]
+- Calificación: [ALTO / MEDIO / DESCARTAR]
+- Acción requerida: [Agendar consulta urgente con el letrado / Agendar consulta estándar]
+
+Fecha actual del sistema: ${todayStr}.
+Nombre de la persona que escribe: ${senderName}.`;
+
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: userText || 'Hola' }] }],
+            systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+            generationConfig: { temperature: 0.5, maxOutputTokens: 600 }
+          })
+        }
+      );
+
+      const data = await res.json();
+      const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (reply) return reply.trim();
+    } catch (err) {
+      console.error('Error llamando a Gemini 3.8 Flash:', err);
+    }
+  }
+
   const textLower = (userText || '').toLowerCase();
 
   if (textLower.includes('despido') || textLower.includes('echar') || textLower.includes('trabajo') || textLower.includes('carta')) {
@@ -92,5 +148,5 @@ async function generateLexiResponse(userText, senderName) {
 - Acción requerida: Agendar consulta urgente con el letrado titular`;
   }
 
-  return 'Buenas tardes. Le atiende Lexi, coordinadora de admisiones de Valenzuela & Asociados Abogados. ¿En qué asunto legal podemos ayudarle hoy: Laboral, Familia, Tráfico/Seguros o Reclamación de Deudas?';
+  return 'Buenas tardes. Le atiende LexiLegal, asistente virtual y coordinadora de admisiones. ¿En qué asunto legal podemos ayudarle hoy: Laboral, Familia, Tráfico/Seguros o Reclamación de Deudas?';
 }
